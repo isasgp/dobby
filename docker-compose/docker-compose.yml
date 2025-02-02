@@ -1,0 +1,33 @@
+version: '3.3'
+
+services:
+  redis-bloom:
+    image: redis/redis-stack-server:latest
+    container_name: redis-bloom
+    ports:
+      - "6379:6379"
+
+  grpc-server:
+    image: isasgp/dobby-grpc-server
+    container_name: grpc-server
+    ports:
+      - "50051:50051"
+
+  spring-server:
+    image: isasgp/dobby-spring-server
+    container_name: spring-server
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_APPLICATION_NAME=dobby
+      - BLOOM_FILTER_REDISHOST=redis-bloom
+      - BLOOM_FILTER_REDISPORT=6379
+      - BLOOM_FILTER_KEY=url-bloom-filter
+      - BLOOM_FILTER_ERRORRATE=0.01
+      - BLOOM_FILTER_CAPACITY=4000000
+      - BLOOM_FILTER_URLFILEPATH=/app/url_data.csv
+      - SPRING_GRPC_HOST=grpc-server
+      - SPRING_GRPC_PORT=50051
+    depends_on:
+      - redis-bloom
+      - grpc-server

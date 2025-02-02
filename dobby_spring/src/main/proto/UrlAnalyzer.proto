@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package urlanalyzer;
+
+// 서비스 정의
+service UrlAnalyzerService {
+  // URL 유효성 검사를 위한 RPC 메서드 정의
+  rpc CheckURL(UrlAnalyzerRequest) returns (UrlAnalyzerResponse) {}
+}
+
+// URL 요청 메시지 정의
+message UrlAnalyzerRequest {
+  string url = 1; // 클라이언트가 보내는 URL 문자열
+}
+
+// URL 응답 메시지 정의
+message UrlAnalyzerResponse {
+  bool isMalicious = 1; // 서버가 클라이언트에게 보내는 boolean 타입 응답
+}

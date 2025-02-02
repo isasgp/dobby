@@ -1,0 +1,74 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.5'
+	id 'io.spring.dependency-management' version '1.1.6'
+	id 'com.google.protobuf' version '0.8.19'
+}
+
+group = 'kr.ac.dankook'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// for gRPC
+	implementation "com.google.protobuf:protobuf-java-util:3.25.1"
+	implementation 'com.google.protobuf:protobuf-java:3.25.1'
+	implementation 'net.devh:grpc-client-spring-boot-starter:2.15.0.RELEASE'
+	runtimeOnly "io.grpc:grpc-netty-shaded:1.62.2"
+	implementation "io.grpc:grpc-protobuf:1.62.2"
+	implementation "io.grpc:grpc-stub:1.62.2"
+	implementation 'javax.annotation:javax.annotation-api:1.3.2'
+
+	// for redis and bloom filter
+	implementation 'redis.clients:jedis:5.2.0'
+//	implementation 'com.redislabs:jrebloom:2.2.2'
+//	implementation 'io.github.dengliming.redismodule:redisbloom:2.0.4'
+//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// for bloom filter
+//	implementation("com.google.guava:guava:33.3.1-jre")
+
+}
+
+protobuf {
+	protoc {
+		artifact = "com.google.protobuf:protoc:3.25.1"
+	}
+	plugins {
+		grpc {
+			artifact = "io.grpc:protoc-gen-grpc-java:1.62.2"
+		}
+	}
+	generateProtoTasks {
+		all()*.plugins {
+			grpc {}
+		}
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
